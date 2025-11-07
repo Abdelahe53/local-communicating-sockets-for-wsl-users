@@ -10,7 +10,7 @@
 #include <sys/un.h>
 #include <unistd.h>
 
-#define MY_SOCK_PATH "/tmp/somepath"
+#define MY_SOCK_PATH "/tmp/serverpath"
 #define LISTEN_BACKLOG 50
 
 #define handle_error(msg)   \
@@ -36,22 +36,23 @@ int main(void)
 
     if (bind(sfd, (struct sockaddr *)&my_addr, sizeof(my_addr)) == -1)
         handle_error("bind");
+    printf("Server bind() succeeded\n");
 
     if (listen(sfd, LISTEN_BACKLOG) == -1)
-    {
         handle_error("listen");
-        exit(EXIT_FAILURE);
-    }
+    printf("Server listen() succeeded\n");
+
     // handling incoming connections using accept
     peer_addr_size = sizeof(peer_addr);
     cfd = accept(sfd, (struct sockaddr *)&peer_addr, &peer_addr_size);
     if (cfd == -1)
         handle_error("accept");
+    printf("Client connected!\n");
 
     // Dealing with socket errors
-    if (close(cfd) == -1)
-        handle_error("close");
+    // if (close(cfd) == -1)
+    //     handle_error("close");
 
-    if (unlink(MY_SOCK_PATH) == -1)
-        handle_error("unlink");
+    // if (unlink(MY_SOCK_PATH) == -1)
+    //     handle_error("unlink");
 }
